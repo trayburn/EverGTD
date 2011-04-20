@@ -1,0 +1,15 @@
+EverGTD is a tool created by Tim Rayburn (tim@timrayburn.net) for the 
+purposes of enabling a GTD workflow from the command line, backed by 
+Evernote.
+
+EverGTD is not licensed for use by any individuals other than Tim 
+Rayburn, and use by anyone other than Tim Rayburn is considered theft.
+
+EverGTD contains a project called EvernoteSharp which is licensed under
+the Apache license.  More information about it can be found at :
+http://evernotesharp.codeplex.com/
+
+The source code of EvernoteSharp as represented in EverGTD has been 
+modified from the original form, all such modifications are 
+copyright Tim Rayburn, and no license for general use is expressed
+or implied.
