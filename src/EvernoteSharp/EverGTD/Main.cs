@@ -1,40 +1,38 @@
 using System;
 using Evernote;
 using EvernoteSharp;
+using Castle.Windsor;
+using Castle.MicroKernel.Registration;
 
 namespace EverGTD
 {
-	public interface IGTD 
-	{
-		void Execute(string[] args);
-	}
-	
-	public class GTD : IGTD 
-	{
-		public void Execute(string[] args)
-		{
-			
-		}
-	}
-	
 	class MainClass
 	{
 		public static void Main (string[] args)
 		{
-			
+            var container = new WindsorContainer();
+
+            container.Register(
+                Component.For<IGTD>().ImplementedBy<GTD>(),
+                Component.For<IEvernoteConfiguration>().ImplementedBy<EvernoteConfiguration>(),
+                Component.For<IGTDConfiguration>().ImplementedBy<GTDConfiguration>()
+                );
+
+            var gtd = container.Resolve<IGTD>();
+            gtd.Execute(args);
 		}
 		
 		public static void EvernoteSharpDemo()
 		{
 			var config = new EvernoteConfiguration();
 			StoreFactory sf = new StoreFactory (config.Server,config.ConsumerKey,config.ConsumerSecret);
-			UserStoreWrapper userStore = sf.CreateUserStore ();
+			var userStore = sf.CreateUserStore ();
 
 			if (!userStore.CheckVersion ()) 
 				throw new Exception ("Invalid API version");
 			userStore.Authenticate (config.UserName, config.Password);
 
-			NoteStoreWrapper noteStore = sf.CreateNoteStore ();
+			var noteStore = sf.CreateNoteStore ();
 			var tags = noteStore.ListTags ();
 			foreach (var item in tags) 
 			{

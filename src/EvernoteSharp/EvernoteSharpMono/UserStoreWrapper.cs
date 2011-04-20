@@ -14,7 +14,7 @@ namespace EvernoteSharp
     /// http connection for you, which is nice, because otherwise, on a 
     /// Compact Framework environment, you could only do three requests.
     /// </summary>
-    public class UserStoreWrapper : AbstractStoreWrapper
+    public class UserStoreWrapper : AbstractStoreWrapper, IUserStore
     {
         private string consumerKey;
         private string consumerSecret;

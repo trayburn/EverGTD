@@ -7,7 +7,7 @@ using Castle.MicroKernel.Registration;
 namespace EverGTD.Tests
 {
 	[TestFixture]
-	public class BaseContainerTest : BaseTest
+	public abstract class BaseContainerTest : BaseTest
 	{
 		protected IWindsorContainer container;
 		
@@ -24,5 +24,14 @@ namespace EverGTD.Tests
 			container.Register(Component.For<T>().Instance(mock));
 			return mock;
 		}
+
+        protected TInterface RegisterAndResolve<TInterface,TImpl>()
+            where TInterface : class
+            where TImpl : class, TInterface
+        {
+            container.Register(Component.For<TInterface>()
+                .ImplementedBy<TImpl>());
+            return container.Resolve<TInterface>();
+        }
 	}
 }

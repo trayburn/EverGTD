@@ -9,7 +9,7 @@ using Evernote.EDAM.UserStore;
 
 namespace EvernoteSharp
 {
-    public class NoteStoreWrapper : AbstractStoreWrapper
+    public class NoteStoreWrapper : AbstractStoreWrapper, INoteStore
     {
         private string authToken;
 

@@ -11,7 +11,7 @@ namespace EvernoteSharp
     /// factory to create UserStore and NoteStore instances.
     /// Factory holds settings like the evernote url and application key.
     /// </summary>
-    public class StoreFactory
+    public class StoreFactory : IStoreFactory
     {
         private Uri evernoteUri;
         private string consumerKey;
@@ -39,7 +39,7 @@ namespace EvernoteSharp
             this.servicebus.AddSubscriber<AuthenticationEvent>(authenticationEventHandler);
         }
 
-        public UserStoreWrapper CreateUserStore()
+        public IUserStore CreateUserStore()
         {
             return new UserStoreWrapper(this.evernoteUri, this.consumerKey, this.consumerSecret, servicebus);
         }
@@ -56,7 +56,7 @@ namespace EvernoteSharp
             this.ShardId = eventInfo.AuthenticationResult.User.ShardId;
         }
 
-        public NoteStoreWrapper CreateNoteStore()
+        public INoteStore CreateNoteStore()
         {
             if (this.AuthenticationToken == null || this.ShardId == null)
                 throw new InvalidOperationException("You should log in to Evernote first");
