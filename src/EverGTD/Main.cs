@@ -15,7 +15,12 @@ namespace EverGTD
             container.Register(
                 Component.For<IGTD>().ImplementedBy<GTD>(),
                 Component.For<IEvernoteConfiguration>().ImplementedBy<EvernoteConfiguration>(),
-                Component.For<IGTDConfiguration>().ImplementedBy<GTDConfiguration>()
+                Component.For<IGTDConfiguration>().ImplementedBy<GTDConfiguration>(),
+                Component.For<IStoreFactory>().UsingFactoryMethod(k =>
+                {
+                    var config = k.Resolve<IEvernoteConfiguration>();
+                    return new StoreFactory(config.Server, config.ConsumerKey, config.ConsumerSecret);
+                })
                 );
 
             var gtd = container.Resolve<IGTD>();
