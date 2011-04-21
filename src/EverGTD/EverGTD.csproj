@@ -61,14 +61,16 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GTD.cs" />
-    <Compile Include="IGTD.cs" />
+    <Compile Include="Abstractions\IConsoleFacade.cs" />
+    <Compile Include="ConsoleFacade.cs" />
+    <Compile Include="Gtd.cs" />
+    <Compile Include="Abstractions\IGTD.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="EvernoteConfiguration.cs" />
-    <Compile Include="IEvernoteConfiguration.cs" />
-    <Compile Include="IGTDConfiguration.cs" />
-    <Compile Include="GTDConfiguration.cs" />
+    <Compile Include="Config\EvernoteConfiguration.cs" />
+    <Compile Include="Config\IEvernoteConfiguration.cs" />
+    <Compile Include="Config\IGTDConfiguration.cs" />
+    <Compile Include="Config\GTDConfiguration.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -3,20 +3,23 @@ using System.Linq;
 using EvernoteSharp;
 using Evernote.EDAM.Type;
 using System.Collections.Generic;
+using Evernote.EDAM.NoteStore;
 
 namespace EverGTD
 {
-    public class GTD : IGTD
+    public class Gtd : IGtd
     {
         private IStoreFactory factory;
         private IEvernoteConfiguration eConfig;
         private IGTDConfiguration gConfig;
+        private IConsoleFacade console;
 
-        public GTD(IStoreFactory factory, IEvernoteConfiguration eConfig, IGTDConfiguration gConfig)
+        public Gtd(IStoreFactory factory, IConsoleFacade console, IEvernoteConfiguration eConfig, IGTDConfiguration gConfig)
         {
             this.factory = factory;
             this.eConfig = eConfig;
             this.gConfig = gConfig;
+            this.console = console;
         }
 
         public void Execute(string[] args)
@@ -26,7 +29,81 @@ namespace EverGTD
 
             var note = factory.CreateNoteStore();
 
-            Setup(note);
+            var cmd = args[0].Trim().ToLower();
+            switch (cmd)
+            {
+                case "setup":
+                    Setup(note);
+                    break;
+                case "today":
+                    Today(note);
+                    break;
+                case "na":
+                    NextAction(note, args.Skip(1));
+                    break;
+            }
+            
+        }
+
+        private void NextAction(INoteStore note, IEnumerable<string> args)
+        {
+            var title = args.First();
+            var tags = args.Skip(1).ToList();
+            tags.Add(gConfig.NextActionTagName);
+
+            note.CreateNote(new Note() { Title = title, TagNames = tags });
+        }
+        private void Today(INoteStore note)
+        {
+            var todayTag = AllTags(note).FirstOrDefault(m => m.Name == string.Format("Day {0:00}", DateTime.Now.Day));
+            var todayFilter = new NoteFilter()
+            {
+                TagGuids = new List<string>() { todayTag.Guid }
+            };
+            var todayNotes = note.FindNotes(todayFilter, 0, Evernote.EDAM.Limits.Constants.EDAM_USER_NOTES_MAX);
+            OutputTodayNotes(note, todayNotes);
+
+            var nextAct = AllTags(note).FirstOrDefault(m => m.Name == gConfig.NextActionTagName);
+
+            var filter = new NoteFilter()
+            {
+                TagGuids = new List<string>() { nextAct.Guid }
+            };
+
+            var nextActionNotes = note.FindNotes(filter, 0, Evernote.EDAM.Limits.Constants.EDAM_USER_NOTES_MAX);
+            OutputNextActions(note, nextActionNotes);
+        }
+
+        private void OutputTodayNotes(INoteStore note, NoteList notes)
+        {
+            console.WriteLine("Today");
+            console.WriteLine("-----");
+            int count = 0;
+            foreach (var lNote in notes.Notes.OrderBy(m => m.Title))
+            {
+                count++;
+                var tags = note.GetNoteTagNames(lNote.Guid);
+                if (tags != null && tags.Contains(gConfig.ImportantTagName))
+                    console.ForegroundColor = ConsoleColor.Yellow;
+                console.WriteLine("{0}> {1}", count, lNote.Title);
+                console.ResetColor();
+            }
+        }
+
+        private void OutputNextActions(INoteStore note, NoteList notes)
+        {
+            console.WriteLine("Next Actions");
+            console.WriteLine("------------");
+            int count = 0;
+            foreach (var lNote in notes.Notes.OrderBy(m => m.Title))
+            {
+                count++;
+                var tags = note.GetNoteTagNames(lNote.Guid);
+                if (tags != null && tags.Contains(gConfig.ImportantTagName))
+                    console.ForegroundColor = ConsoleColor.Yellow;
+                console.WriteLine("{0}> {1}", count, lNote.Title);
+                console.ResetColor();
+            }
         }
 
         private void Setup(INoteStore note)
@@ -35,37 +112,38 @@ namespace EverGTD
 
             if (gtd == null)
             {
-                Console.WriteLine("Creating Notebook");
+                console.WriteLine("Creating Notebook");
                 note.CreateNotebook(new Notebook
                     {
                         Name = gConfig.NotebookName
                     });
             }
 
-            var nextAct = CreateTagIfNonExistant(note, gConfig.NextActionTagName);
-            var waitingOn = CreateTagIfNonExistant(note, gConfig.WaitingOnTagName);
-            var tickler = CreateTagIfNonExistant(note, gConfig.TicklerTagName);
-            var days = CreateTagIfNonExistant(note, gConfig.TicklerDaysSubTagName, tickler.Guid);
-            var months = CreateTagIfNonExistant(note, gConfig.TicklerMonthsSubTagName, tickler.Guid);
+            var nextAct = CreateTagIfNeeded(note, gConfig.NextActionTagName);
+            var waitingOn = CreateTagIfNeeded(note, gConfig.WaitingOnTagName);
+            var someday = CreateTagIfNeeded(note, gConfig.SomedayTagName);
+            var tickler = CreateTagIfNeeded(note, gConfig.TicklerTagName);
+            var days = CreateTagIfNeeded(note, gConfig.TicklerDaysSubTagName, tickler.Guid);
+            var months = CreateTagIfNeeded(note, gConfig.TicklerMonthsSubTagName, tickler.Guid);
 
             for (int day = 1; day < 32; day++)
             {
-                CreateTagIfNonExistant(note, string.Format("Day {0:00}", day), days.Guid);
+                CreateTagIfNeeded(note, string.Format("Day {0:00}", day), days.Guid);
             }
 
             var jan1 = DateTime.Parse("1/1/2000");
             for (int month = 0; month < 12; month++)
             {
                 var dt = jan1.AddMonths(month);
-                CreateTagIfNonExistant(note, string.Format("{0:00}-{1:MMM}", month + 1, dt), months.Guid);
+                CreateTagIfNeeded(note, string.Format("{0:00}-{1:MMM}", month + 1, dt), months.Guid);
             }
         }
 
-        private Tag CreateTagIfNonExistant(INoteStore note, string name, string parent = null)
+        private Tag CreateTagIfNeeded(INoteStore note, string name, string parent = null)
         {
             if (AllTags(note).Any(m => m.Name == name) == false)
             {
-                Console.WriteLine("Creating Tag : {0}", name);
+                console.WriteLine("Creating Tag : {0}", name);
                 Tag newTag = new Tag { Name = name };
                 if (parent != null) newTag.ParentGuid = parent;
                 newTag = note.CreateTag(newTag);

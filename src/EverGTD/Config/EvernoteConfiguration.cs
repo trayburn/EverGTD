@@ -8,7 +8,7 @@ namespace EverGTD
 	{
 		public Uri Server {
 			get {
-				return new Uri("https://sandbox.evernote.com/");
+				return new Uri("https://www.evernote.com/");
 			}
 		}
 

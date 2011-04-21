@@ -2,7 +2,7 @@ using System;
 
 namespace EverGTD
 {
-    public interface IGTD
+    public interface IGtd
     {
         void Execute(string[] args);
     }

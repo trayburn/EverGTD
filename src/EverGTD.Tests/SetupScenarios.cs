@@ -6,43 +6,50 @@ using EvernoteSharp;
 using Rhino.Mocks;
 using Evernote.EDAM.Type;
 using System.Collections.Generic;
+using Evernote.EDAM.NoteStore;
 
 namespace EverGTD.Tests
 {
     [TestFixture]
-    public class GTDScenarios : BaseContainerTest
+    public class TodayScenarios : BaseEvernoteTest
     {
-        private List<Notebook> allNotebooks;
-        private List<Tag> allTags;
-        private IGTD gtd;
-        private IStoreFactory factory;
-        private INoteStore note;
-        private IUserStore user;
-        private IEvernoteConfiguration eConfig;
-        private IGTDConfiguration gConfig;
+        private string[] args;
 
         public override void BeforeEachTest()
         {
             base.BeforeEachTest();
-            SetupIStoreFactory();
-            SetupIEvernoteConfiguration();
-
-            gConfig = MockAndIoC<IGTDConfiguration>();
-            gConfig.Stub(m => m.NotebookName).Return("GTD");
-            gConfig.Stub(m => m.NextActionTagName).Return(".Next Action");
-            gConfig.Stub(m => m.WaitingOnTagName).Return(".Waiting On");
-            gConfig.Stub(m => m.TicklerTagName).Return(".Tickler");
-            gConfig.Stub(m => m.TicklerDaysSubTagName).Return("Days");
-            gConfig.Stub(m => m.TicklerMonthsSubTagName).Return("Months");
-
-            gtd = RegisterAndResolve<IGTD, GTD>();
+            args = new[] { "today" };
         }
 
-        public override void AfterEachTest()
+        [Test]
+        public void Today_Should_List_All_Next_Actions()
         {
-            user.AssertWasCalled(m => m.Authenticate("foo", "bar"));
-        }
+            // Arrange
+            allTags.Add(new Tag { Guid = Guid.NewGuid().ToString(), Name = gConfig.NextActionTagName });
+            note.Stub(m => m.FindNotes(null, 0, 0)).IgnoreArguments()
+                .Return(new NoteList()
+                {
+                    Notes = new List<Note>()
+                    {
+                        new Note { Title = "Foo" },
+                        new Note { Title = "Bar" },
+                        new Note { Title = "Baz" }
+                    }
+                });
 
+            // Act
+            gtd.Execute(args);
+
+            // Assert
+            console.AssertWasCalled(m => m.WriteLine("Today"));
+            console.AssertWasCalled(m => m.WriteLine("-----"));
+            console.AssertWasCalled(m => m.WriteLine("",0,""),
+                mo => mo.IgnoreArguments().Repeat.Times(3));
+        }
+    }
+    [TestFixture]
+    public class GTDScenarios : BaseEvernoteTest
+    {
         [Test]
         public void Setup_Should_Create_All_Tags_When_They_Do_Not_Exist()
         {
@@ -52,8 +59,8 @@ namespace EverGTD.Tests
             gtd.Execute(args);
 
             // Assert
-            note.AssertWasCalled(m => m.CreateTag(Arg<Tag>.Is.Anything), 
-                mo => mo.Repeat.Times(48));
+            note.AssertWasCalled(m => m.CreateTag(Arg<Tag>.Is.Anything),
+                mo => mo.Repeat.Times(49));
         }
 
         [Test]
@@ -82,36 +89,6 @@ namespace EverGTD.Tests
             // Assert
             note.AssertWasCalled(m => m.ListNotebooks());
             note.AssertWasCalled(m => m.CreateNotebook(Arg<Notebook>.Is.Anything));
-        }
-
-        private void SetupIEvernoteConfiguration()
-        {
-            eConfig = MockAndIoC<IEvernoteConfiguration>();
-            eConfig.Stub(m => m.UserName).Return("foo");
-            eConfig.Stub(m => m.Password).Return("bar");
-        }
-
-        private void SetupIStoreFactory()
-        {
-            note = MockAndIoC<INoteStore>();
-            user = MockAndIoC<IUserStore>();
-            factory = MockAndIoC<IStoreFactory>();
-            factory.Stub(m => m.CreateNoteStore()).Return(note);
-            factory.Stub(m => m.CreateUserStore()).Return(user);
-
-            note.Stub(m => m.CreateTag(Arg<Tag>.Is.Anything))
-                .WhenCalled(mi =>
-                {
-                    mi.ReturnValue = mi.Arguments[0];
-                });
-
-            allTags = new List<Tag>();
-            allNotebooks = new List<Notebook>();
-            note.Stub(m => m.ListNotebooks())
-                .Return(allNotebooks);
-            note.Stub(m => m.ListTags())
-                .Return(allTags);
-
         }
     }
 }
