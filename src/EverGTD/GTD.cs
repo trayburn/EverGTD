@@ -29,7 +29,10 @@ namespace EverGTD
 
             var note = factory.CreateNoteStore();
 
-            var cmd = args[0].Trim().ToLower();
+            string cmd;
+            if ((args.Count() > 0) == false) cmd = "today";
+            else cmd = args[0].Trim().ToLower();
+
             switch (cmd)
             {
                 case "setup":
@@ -41,10 +44,30 @@ namespace EverGTD
                 case "na":
                     NextAction(note, args.Skip(1));
                     break;
+                case "import":
+                    Import(note);
+                    break;
             }
-            
         }
 
+        private void Import(INoteStore note)
+        {
+            var notes = AllNotesForToday(note);
+            var tagName = string.Format("Day {0:00}", DateTime.Now.Day);
+            var naGuid = AllTags(note).First(m => m.Name == gConfig.NextActionTagName).Guid;
+            var importantGuid = AllTags(note).First(m => m.Name == gConfig.ImportantTagName).Guid;
+            var tagGuid = AllTags(note).First(m => m.Name == tagName).Guid;
+
+            foreach (var lNote in notes)
+            {
+                lNote.TagGuids.Remove(tagGuid);
+                lNote.TagGuids.Add(naGuid);
+                lNote.TagGuids.Add(importantGuid);
+                lNote.Title = "@" + tagName + " > " + lNote.Title;
+                note.UpdateNote(lNote);
+            }
+
+        }
         private void NextAction(INoteStore note, IEnumerable<string> args)
         {
             var title = args.First();
@@ -55,13 +78,8 @@ namespace EverGTD
         }
         private void Today(INoteStore note)
         {
-            var todayTag = AllTags(note).FirstOrDefault(m => m.Name == string.Format("Day {0:00}", DateTime.Now.Day));
-            var todayFilter = new NoteFilter()
-            {
-                TagGuids = new List<string>() { todayTag.Guid }
-            };
-            var todayNotes = note.FindNotes(todayFilter, 0, Evernote.EDAM.Limits.Constants.EDAM_USER_NOTES_MAX);
-            OutputTodayNotes(note, todayNotes);
+            var todayNotes = AllNotesForToday(note);
+            if (todayNotes.Count > 0) OutputTodayNotes(note, todayNotes);
 
             var nextAct = AllTags(note).FirstOrDefault(m => m.Name == gConfig.NextActionTagName);
 
@@ -71,21 +89,22 @@ namespace EverGTD
             };
 
             var nextActionNotes = note.FindNotes(filter, 0, Evernote.EDAM.Limits.Constants.EDAM_USER_NOTES_MAX);
-            OutputNextActions(note, nextActionNotes);
+            if (nextActionNotes.Notes.Count > 0) OutputNextActions(note, nextActionNotes);
         }
 
-        private void OutputTodayNotes(INoteStore note, NoteList notes)
+        private void OutputTodayNotes(INoteStore note, IList<Note> notes)
         {
             console.WriteLine("Today");
             console.WriteLine("-----");
             int count = 0;
-            foreach (var lNote in notes.Notes.OrderBy(m => m.Title))
+            foreach (var lNote in notes.OrderBy(m => m.Title))
             {
                 count++;
                 var tags = note.GetNoteTagNames(lNote.Guid);
                 if (tags != null && tags.Contains(gConfig.ImportantTagName))
                     console.ForegroundColor = ConsoleColor.Yellow;
                 console.WriteLine("{0}> {1}", count, lNote.Title);
+                console.WriteLine();
                 console.ResetColor();
             }
         }
@@ -139,6 +158,16 @@ namespace EverGTD
             }
         }
 
+        private IList<Note> AllNotesForToday(INoteStore note)
+        {
+            var todayTag = AllTags(note).FirstOrDefault(m => m.Name == string.Format("Day {0:00}", DateTime.Now.Day));
+            var todayFilter = new NoteFilter()
+            {
+                TagGuids = new List<string>() { todayTag.Guid }
+            };
+            var todayNotes = note.FindNotes(todayFilter, 0, Evernote.EDAM.Limits.Constants.EDAM_USER_NOTES_MAX);
+            return todayNotes.Notes;
+        }
         private Tag CreateTagIfNeeded(INoteStore note, string name, string parent = null)
         {
             if (AllTags(note).Any(m => m.Name == name) == false)
