@@ -59,18 +59,32 @@
       <HintPath>..\..\lib\Castle\dotNet35\Castle.Windsor.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abstractions\IConsoleFacade.cs" />
+    <Compile Include="AppendCommand.cs" />
+    <Compile Include="BangCommand.cs" />
+    <Compile Include="BaseCommand.cs" />
+    <Compile Include="CachedNoteStore.cs" />
     <Compile Include="ConsoleFacade.cs" />
+    <Compile Include="DeleteCommand.cs" />
+    <Compile Include="DoneCommand.cs" />
     <Compile Include="Gtd.cs" />
     <Compile Include="Abstractions\IGTD.cs" />
+    <Compile Include="ICachedNoteStore.cs" />
+    <Compile Include="ICommand.cs" />
+    <Compile Include="ImportCommand.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Config\EvernoteConfiguration.cs" />
     <Compile Include="Config\IEvernoteConfiguration.cs" />
     <Compile Include="Config\IGTDConfiguration.cs" />
     <Compile Include="Config\GTDConfiguration.cs" />
+    <Compile Include="NextActionCommand.cs" />
+    <Compile Include="SetupCommand.cs" />
+    <Compile Include="TodayCommand.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
