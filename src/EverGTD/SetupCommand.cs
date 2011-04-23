@@ -37,16 +37,14 @@ namespace EverGTD
             var days = note.CreateTagIfNeeded(gConfig.TicklerDaysSubTagName, tickler.Guid);
             var months = note.CreateTagIfNeeded(gConfig.TicklerMonthsSubTagName, tickler.Guid);
 
-            for (int day = 1; day < 32; day++)
+            foreach (var day in DayTagNames())
             {
-                note.CreateTagIfNeeded(string.Format("Day {0:00}", day), days.Guid);
+                note.CreateTagIfNeeded(day, days.Guid);
             }
 
-            var jan1 = DateTime.Parse("1/1/2000");
-            for (int month = 0; month < 12; month++)
+            foreach (var month in MonthTagNames())
             {
-                var dt = jan1.AddMonths(month);
-                note.CreateTagIfNeeded(string.Format("{0:00}-{1:MMM}", month + 1, dt), months.Guid);
+                note.CreateTagIfNeeded(month, months.Guid);
             }
         }
     }
