@@ -1,0 +1,1 @@
+cp src/EverGTD/bin/Debug/* /c/Utils/GTD/.
