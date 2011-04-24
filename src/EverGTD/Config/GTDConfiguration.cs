@@ -14,6 +14,14 @@ namespace EverGTD
             }
         }
 
+        public string AgendaTagName
+        {
+            get
+            {
+                return "Agenda";
+            }
+        }
+
         public string NextActionTagName
         {
             get
