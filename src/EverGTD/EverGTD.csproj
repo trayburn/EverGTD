@@ -65,6 +65,8 @@
   <ItemGroup>
     <Compile Include="Abstractions\IConsoleFacade.cs" />
     <Compile Include="Commands\AgendaCommand.cs" />
+    <Compile Include="Commands\AgendaCreateCommand.cs" />
+    <Compile Include="Commands\AgendaListCommand.cs" />
     <Compile Include="Commands\AppendCommand.cs" />
     <Compile Include="Commands\BangCommand.cs" />
     <Compile Include="Commands\BaseCommand.cs" />
@@ -72,6 +74,8 @@
     <Compile Include="Abstractions\ConsoleFacade.cs" />
     <Compile Include="Commands\DeleteCommand.cs" />
     <Compile Include="Commands\DoneCommand.cs" />
+    <Compile Include="Commands\IAgendaCreate.cs" />
+    <Compile Include="Commands\IAgendaList.cs" />
     <Compile Include="Commands\WaitingOnCommand.cs" />
     <Compile Include="Gtd.cs" />
     <Compile Include="Abstractions\IGTD.cs" />

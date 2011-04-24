@@ -12,12 +12,14 @@ namespace EverGTD
         private IStoreFactory factory;
         private IEvernoteConfiguration eConfig;
         private ICommand[] commands;
+        private IConsoleFacade console;
 
-        public Gtd(IStoreFactory factory, IEvernoteConfiguration eConfig, ICommand[] commands)
+        public Gtd(IStoreFactory factory, IConsoleFacade console, IEvernoteConfiguration eConfig, ICommand[] commands)
         {
             this.factory = factory;
             this.eConfig = eConfig;
             this.commands = commands;
+            this.console = console;
         }
 
         public void Execute(string[] args)
@@ -32,7 +34,9 @@ namespace EverGTD
             else cmdName = args[0].Trim().ToLower();
             var rest = args.Skip(1);
 
-            commands.First(m => m.Name == cmdName).Execute(rest);
+            var cmd = commands.FirstOrDefault(m => m.Name == cmdName);
+            if (cmd == null) console.WriteLine("Unknown Command"); 
+            else cmd.Execute(rest);
         }
     }
 }

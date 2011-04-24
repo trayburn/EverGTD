@@ -20,7 +20,7 @@ namespace EverGTD
                     Component.For<IEvernoteConfiguration>().ImplementedBy<EvernoteConfiguration>(), 
                     Component.For<IGTDConfiguration>().ImplementedBy<GTDConfiguration>(), 
                     Component.For<ICachedNoteStore>().ImplementedBy<CachedNoteStore>(),
-                    AllTypes.FromThisAssembly().BasedOn<ICommand>().WithService.Base(),
+                    AllTypes.FromThisAssembly().BasedOn<ICommand>().WithService.AllInterfaces(),
                     Component.For<IStoreFactory>().UsingFactoryMethod(k =>
                     {
                         var config = k.Resolve<IEvernoteConfiguration>();

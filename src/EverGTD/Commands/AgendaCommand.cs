@@ -8,9 +8,14 @@ namespace EverGTD
 {
     public class AgendaCommand : BaseCommand, ICommand
     {
-        public AgendaCommand(IConsoleFacade console, ICachedNoteStore note, IGTDConfiguration gConfig)
+        private IAgendaList list;
+        private IAgendaCreate create;
+
+        public AgendaCommand(IAgendaList list, IAgendaCreate create, IConsoleFacade console, ICachedNoteStore note, IGTDConfiguration gConfig)
             : base(console, note, gConfig)
         {
+            this.list = list;
+            this.create = create;
         }
 
         public string Name
@@ -23,30 +28,19 @@ namespace EverGTD
             switch (parameters.Count())
             {
                 case 0:
-                    ListAgenda();
+                    list.Execute(parameters);
                     break;
                 default:
-                    CreateOrEditAgenda(parameters);
-                    break;
-            }
-        }
-
-        private void ListAgenda()
-        {
-            var aNotes = note.GetNotesByTags(gConfig.AgendaTagName);
-            if (aNotes.Count > 0) OutputAgendas(aNotes);
-        }
-
-        private void CreateOrEditAgenda(IEnumerable<string> parameters)
-        {
-            var firstParam = parameters.First().Trim().ToLower();
-            switch (firstParam)
-            {
-                case "+":
-                    CreateAgenda(parameters.Skip(1));
-                    break;
-                default:
-                    EditAgenda(parameters);
+                    var firstParam = parameters.First().Trim().ToLower();
+                    switch (firstParam)
+                    {
+                        case "+":
+                            create.Execute(parameters.Skip(1));
+                            break;
+                        default:
+                            EditAgenda(parameters);
+                            break;
+                    }
                     break;
             }
         }
@@ -65,25 +59,6 @@ namespace EverGTD
             xDoc.Elements().First().Add(nElement);
             appendNote.Content = xDoc.ToString();
             note.UpdateNote(appendNote);
-        }
-        private void CreateAgenda(IEnumerable<string> parameters)
-        {
-            var title = parameters.First();
-            var tags = parameters.Skip(1).ToList();
-            tags.Add(gConfig.AgendaTagName);
-
-            note.CreateNote(new Note() { Title = title, TagNames = tags });
-        }
-        private void OutputAgendas(IList<Note> notes)
-        {
-            console.WriteLine("Agendas");
-            console.WriteLine("-------");
-            int count = 0;
-            foreach (var lNote in notes)
-            {
-                count++;
-                console.WriteLine("{0}> {1}", count, lNote.Title);
-            }
         }
     }
 }
