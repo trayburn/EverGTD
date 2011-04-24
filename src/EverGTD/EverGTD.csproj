@@ -64,27 +64,28 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abstractions\IConsoleFacade.cs" />
-    <Compile Include="AppendCommand.cs" />
-    <Compile Include="BangCommand.cs" />
-    <Compile Include="BaseCommand.cs" />
-    <Compile Include="CachedNoteStore.cs" />
-    <Compile Include="ConsoleFacade.cs" />
-    <Compile Include="DeleteCommand.cs" />
-    <Compile Include="DoneCommand.cs" />
+    <Compile Include="Commands\AppendCommand.cs" />
+    <Compile Include="Commands\BangCommand.cs" />
+    <Compile Include="Commands\BaseCommand.cs" />
+    <Compile Include="Abstractions\CachedNoteStore.cs" />
+    <Compile Include="Abstractions\ConsoleFacade.cs" />
+    <Compile Include="Commands\DeleteCommand.cs" />
+    <Compile Include="Commands\DoneCommand.cs" />
+    <Compile Include="Commands\WaitingOnCommand.cs" />
     <Compile Include="Gtd.cs" />
     <Compile Include="Abstractions\IGTD.cs" />
-    <Compile Include="ICachedNoteStore.cs" />
-    <Compile Include="ICommand.cs" />
-    <Compile Include="ImportCommand.cs" />
+    <Compile Include="Abstractions\ICachedNoteStore.cs" />
+    <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Commands\ImportCommand.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Config\EvernoteConfiguration.cs" />
     <Compile Include="Config\IEvernoteConfiguration.cs" />
     <Compile Include="Config\IGTDConfiguration.cs" />
     <Compile Include="Config\GTDConfiguration.cs" />
-    <Compile Include="NextActionCommand.cs" />
-    <Compile Include="SetupCommand.cs" />
-    <Compile Include="TodayCommand.cs" />
+    <Compile Include="Commands\NextActionCommand.cs" />
+    <Compile Include="Commands\SetupCommand.cs" />
+    <Compile Include="Commands\TodayCommand.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
