@@ -4,25 +4,28 @@ using System.Collections.Generic;
 
 namespace EverGTD
 {
-    public abstract class BaseBrokerCommand<TList, TCreate, TAppend, TDone, TDelete> : BaseCommand
+    public abstract class BaseBrokerCommand<TList, TCreate, TAppend, TTag, TDone, TDelete> : BaseCommand
         where TList : ICommand
         where TCreate : ICommand
         where TAppend : ICommand
+        where TTag : ICommand
         where TDone : ICommand
         where TDelete : ICommand
     {
         protected TList list;
         protected TCreate create;
         protected TAppend append;
+        protected TTag tag;
         protected TDone done;
         protected TDelete delete;
 
-        public BaseBrokerCommand(string cmdName, string tagName, TList list, TCreate create, TAppend append, TDone done, TDelete delete, IConsoleFacade console, ICachedNoteStore note, IGTDConfiguration gConfig)
+        public BaseBrokerCommand(string cmdName, string tagName, TList list, TCreate create, TAppend append, TTag tag, TDone done, TDelete delete, IConsoleFacade console, ICachedNoteStore note, IGTDConfiguration gConfig)
             : base(cmdName, tagName, console, note, gConfig)
         {
             this.list = list;
             this.create = create;
             this.append = append;
+            this.tag = tag;
             this.done = done;
             this.delete = delete;
         }
@@ -39,18 +42,27 @@ namespace EverGTD
                     switch (firstParam)
                     {
                         case "+":
+                        case "create":
                             create.Execute(parameters.Skip(1));
                             return;
                         case "=":
+                        case "append":
                             append.Execute(parameters.Skip(1));
                             return;
+                        case "==":
+                        case "tag":
+                            tag.Execute(parameters.Skip(1));
+                            return;
                         case "-":
+                        case "done":
                             done.Execute(parameters.Skip(1));
                             return;
                         case "--":
+                        case "del":
                             delete.Execute(parameters.Skip(1));
                             return;
                         case "?":
+                        case "list":
                             list.Execute(parameters.Skip(1));
                             return;
                         default:

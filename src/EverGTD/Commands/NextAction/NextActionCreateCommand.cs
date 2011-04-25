@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace EverGTD
 {
-    public class NextActionCreateCommand : BaseCreateCommand
+    public class NextActionCreateCommand : BaseCreateCommand, INextActionCreate
     {
         public NextActionCreateCommand(IConsoleFacade console, ICachedNoteStore note, IGTDConfiguration gConfig)
             : base("na+", gConfig.NextActionTagName, console, note, gConfig)

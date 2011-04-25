@@ -6,7 +6,7 @@ using System.Xml.Linq;
 
 namespace EverGTD
 {
-    public class NextActionAppendCommand : BaseAppendCommand, ICommand
+    public class NextActionAppendCommand : BaseAppendCommand, INextActionAppend
     {
         public NextActionAppendCommand(IConsoleFacade console, ICachedNoteStore note, IGTDConfiguration gConfig)
             : base("na=", gConfig.NextActionTagName, console, note, gConfig)

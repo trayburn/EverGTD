@@ -2,7 +2,7 @@ using System;
 
 namespace EverGTD
 {
-    public interface INextActionDoneCommand : ICommand
+    public interface INextActionList : ICommand
     {
     }
 }
