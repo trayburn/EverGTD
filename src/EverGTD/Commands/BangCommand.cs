@@ -7,19 +7,14 @@ namespace EverGTD
     public class BangCommand : BaseCommand, ICommand
     {
         public BangCommand(IConsoleFacade console, ICachedNoteStore note, IGTDConfiguration gConfig)
-            : base(console, note, gConfig)
+            : base("!", gConfig.NextActionTagName, console, note, gConfig)
         {
         }
 
-        public string Name
-        {
-            get { return "!"; }
-        }
-
-        public void Execute(IEnumerable<string> parameters)
+        public override void Execute(IEnumerable<string> parameters)
         {
             var noteNum = Convert.ToInt32(parameters.First());
-            var allNotes = note.GetNotesByTags(gConfig.NextActionTagName);
+            var allNotes = note.GetNotesByTags(tagName);
             var iGuid = note.AllTags.First(m => m.Name == gConfig.ImportantTagName).Guid;
             var appendNote = allNotes[noteNum - 1];
 

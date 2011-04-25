@@ -64,23 +64,38 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abstractions\IConsoleFacade.cs" />
-    <Compile Include="Commands\AgendaCommand.cs" />
-    <Compile Include="Commands\AgendaCreateCommand.cs" />
-    <Compile Include="Commands\AgendaListCommand.cs" />
-    <Compile Include="Commands\AppendCommand.cs" />
+    <Compile Include="Commands\Agenda\AgendaAppendCommand.cs" />
+    <Compile Include="Commands\Agenda\AgendaCommand.cs" />
+    <Compile Include="Commands\Agenda\AgendaCreateCommand.cs" />
+    <Compile Include="Commands\Agenda\AgendaDeleteCommand.cs" />
+    <Compile Include="Commands\Agenda\AgendaDoneCommand.cs" />
+    <Compile Include="Commands\Agenda\AgendaListCommand.cs" />
+    <Compile Include="Commands\BaseTypes\BaseBrokerCommand.cs" />
+    <Compile Include="Commands\NextAction\NextActionAppendCommand.cs" />
     <Compile Include="Commands\BangCommand.cs" />
-    <Compile Include="Commands\BaseCommand.cs" />
+    <Compile Include="Commands\BaseTypes\BaseAppendCommand.cs" />
+    <Compile Include="Commands\BaseTypes\BaseCommand.cs" />
     <Compile Include="Abstractions\CachedNoteStore.cs" />
     <Compile Include="Abstractions\ConsoleFacade.cs" />
-    <Compile Include="Commands\DeleteCommand.cs" />
-    <Compile Include="Commands\DoneCommand.cs" />
-    <Compile Include="Commands\IAgendaCreate.cs" />
-    <Compile Include="Commands\IAgendaList.cs" />
+    <Compile Include="Commands\BaseTypes\BaseCreateCommand.cs" />
+    <Compile Include="Commands\BaseTypes\BaseListCommand.cs" />
+    <Compile Include="Commands\Agenda\IAgendaAppend.cs" />
+    <Compile Include="Commands\Agenda\IAgendaDelete.cs" />
+    <Compile Include="Commands\Agenda\IAgendaDone.cs" />
+    <Compile Include="Commands\NextAction\INextActionDelete.cs" />
+    <Compile Include="Commands\NextAction\INextActionDoneCommand.cs" />
+    <Compile Include="Commands\NextAction\NextActionDeleteCommand.cs" />
+    <Compile Include="Commands\NextAction\NextActionDoneCommand.cs" />
+    <Compile Include="ContentWriter.cs" />
+    <Compile Include="Commands\BaseTypes\BaseDeleteCommand.cs" />
+    <Compile Include="Commands\BaseTypes\BaseDoneCommand.cs" />
+    <Compile Include="Commands\Agenda\IAgendaCreate.cs" />
+    <Compile Include="Commands\Agenda\IAgendaList.cs" />
     <Compile Include="Commands\WaitingOnCommand.cs" />
     <Compile Include="Gtd.cs" />
     <Compile Include="Abstractions\IGTD.cs" />
     <Compile Include="Abstractions\ICachedNoteStore.cs" />
-    <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Commands\BaseTypes\ICommand.cs" />
     <Compile Include="Commands\ImportCommand.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
@@ -88,7 +103,7 @@
     <Compile Include="Config\IEvernoteConfiguration.cs" />
     <Compile Include="Config\IGTDConfiguration.cs" />
     <Compile Include="Config\GTDConfiguration.cs" />
-    <Compile Include="Commands\NextActionCommand.cs" />
+    <Compile Include="Commands\NextAction\NextActionCreateCommand.cs" />
     <Compile Include="Commands\SetupCommand.cs" />
     <Compile Include="Commands\TodayCommand.cs" />
   </ItemGroup>
@@ -116,4 +131,5 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
 </Project>

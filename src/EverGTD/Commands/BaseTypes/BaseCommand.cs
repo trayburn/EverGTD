@@ -3,17 +3,21 @@ using System.Collections.Generic;
 
 namespace EverGTD
 {
-    public abstract class BaseCommand
+    public abstract class BaseCommand : ICommand
     {
         protected IConsoleFacade console;
         protected IGTDConfiguration gConfig;
         protected ICachedNoteStore note;
+        protected string cmdName;
+        protected string tagName;
 
-        public BaseCommand(IConsoleFacade console, ICachedNoteStore note, IGTDConfiguration gConfig)
+        public BaseCommand(string cmdName, string tagName, IConsoleFacade console, ICachedNoteStore note, IGTDConfiguration gConfig)
         {
             this.console = console;
             this.gConfig = gConfig;
             this.note = note;
+            this.cmdName = cmdName;
+            this.tagName = tagName;
         }
 
         protected IEnumerable<string> MonthTagNames()
@@ -33,5 +37,12 @@ namespace EverGTD
                 yield return string.Format("Day {0:00}", day);
             }
         }
+
+        public string Name
+        {
+            get { return cmdName; }
+        }
+
+        public abstract void Execute(IEnumerable<string> parameters);
     }
 }

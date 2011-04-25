@@ -8,16 +8,11 @@ namespace EverGTD
     public class WaitingOnCommand : BaseCommand, ICommand
     {
         public WaitingOnCommand(IConsoleFacade console, ICachedNoteStore note, IGTDConfiguration gConfig)
-            : base(console, note, gConfig)
+            : base("wait", gConfig.WaitingOnTagName, console, note, gConfig)
         {
         }
 
-        public string Name
-        {
-            get { return "wait"; }
-        }
-
-        public void Execute(IEnumerable<string> parameters)
+        public override void Execute(IEnumerable<string> parameters)
         {
             var title = parameters.First();
             var tags = parameters.Skip(1).ToList();

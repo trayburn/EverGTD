@@ -8,16 +8,11 @@ namespace EverGTD
     public class SetupCommand : BaseCommand, ICommand
     {
         public SetupCommand(IConsoleFacade console, ICachedNoteStore note, IGTDConfiguration gConfig)
-            : base(console, note, gConfig)
+            : base("setup", "", console, note, gConfig)
         {
         }
 
-        public string Name
-        {
-            get { return "setup"; }
-        }
-
-        public void Execute(IEnumerable<string> parameters)
+        public override void Execute(IEnumerable<string> parameters)
         {
             var gtd = note.AllNotebooks.FirstOrDefault(m => m.Name == gConfig.NotebookName);
 

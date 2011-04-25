@@ -4,19 +4,14 @@ using System.Collections.Generic;
 
 namespace EverGTD
 {
-    public class AgendaListCommand : BaseCommand, ICommand, IAgendaList
+    public abstract class BaseListCommand : BaseCommand, ICommand
     {
-        public AgendaListCommand(IConsoleFacade console, ICachedNoteStore note, IGTDConfiguration gConfig)
-            : base(console, note, gConfig)
+        public BaseListCommand(string cmdName, string tagName, IConsoleFacade console, ICachedNoteStore note, IGTDConfiguration gConfig)
+            : base(cmdName, tagName, console, note, gConfig)
         {
         }
 
-        public string Name
-        {
-            get { return "a"; }
-        }
-
-        public void Execute(IEnumerable<string> parameters)
+        public override void Execute(IEnumerable<string> parameters)
         {
             var aNotes = note.GetNotesByTags(gConfig.AgendaTagName);
             if (aNotes.Count > 0) OutputAgendas(aNotes);
@@ -24,8 +19,6 @@ namespace EverGTD
 
         private void OutputAgendas(IList<Note> notes)
         {
-            console.WriteLine("Agendas");
-            console.WriteLine("-------");
             int count = 0;
             foreach (var lNote in notes)
             {
@@ -33,5 +26,6 @@ namespace EverGTD
                 console.WriteLine("{0}> {1}", count, lNote.Title);
             }
         }
+
     }
 }

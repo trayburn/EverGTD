@@ -9,16 +9,11 @@ namespace EverGTD
     public class TodayCommand : BaseCommand, ICommand
     {
         public TodayCommand(IConsoleFacade console, ICachedNoteStore note, IGTDConfiguration gConfig)
-            : base(console, note, gConfig)
+            : base("today", "", console, note, gConfig)
         {
         }
 
-        public string Name
-        {
-            get { return "today"; }
-        }
-
-        public void Execute(IEnumerable<string> parameters)
+        public override void Execute(IEnumerable<string> parameters)
         {
             var todayNotes = note.AllNotesForToday;
             if (todayNotes.Count > 0)
