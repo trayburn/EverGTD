@@ -78,6 +78,15 @@ namespace EverGTD
             }
         } 
 
+        public string GetTagForDay(int day)
+        {
+            return string.Format("Day {0:00}", day);
+        }
+
+        public string GetTagForToday()
+        {
+            return GetTagForDay(DateTime.Now.Day);
+        }
         //public string TicklerDayTagNameFormat {
         //	get {
         //		return "Day {0}";

@@ -15,6 +15,8 @@ namespace EverGTD
         string TicklerMonthsSubTagName { get; }
         string ImportantTagName { get; }
         string AgendaTagName { get; }
+        string GetTagForDay(int day);
+        string GetTagForToday();
         //string TicklerDayTagNameFormat {get;}
         //string TicklerMonthTagNameFormat {get;}
     }

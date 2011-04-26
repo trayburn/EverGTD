@@ -5,10 +5,10 @@ using System.Collections.Generic;
 
 namespace EverGTD
 {
-    public class WaitingOnCommand : BaseCommand, ICommand
+    public class WaitingOnCreateCommand : BaseCreateCommand, IWaitingOnCreate
     {
-        public WaitingOnCommand(IConsoleFacade console, ICachedNoteStore note, IGTDConfiguration gConfig)
-            : base("wait", gConfig.WaitingOnTagName, console, note, gConfig)
+        public WaitingOnCreateCommand(IConsoleFacade console, ICachedNoteStore note, IGTDConfiguration gConfig)
+            : base("w+", gConfig.WaitingOnTagName, console, note, gConfig)
         {
         }
 
@@ -23,9 +23,8 @@ namespace EverGTD
                 console.WriteLine("You must include a Day or Month tag when waiting, as a reminder of when to follow up");
                 return;
             }
-            tags.Add(gConfig.WaitingOnTagName);
 
-            note.CreateNote(new Note() { Title = title, TagNames = tags });
+            base.Execute(parameters);
         }
     }
 }

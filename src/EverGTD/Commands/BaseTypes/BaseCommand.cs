@@ -34,7 +34,7 @@ namespace EverGTD
         {
             for (int day = 1; day < 32; day++)
             {
-                yield return string.Format("Day {0:00}", day);
+                yield return gConfig.GetTagForDay(day);
             }
         }
 
